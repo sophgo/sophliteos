@@ -1,12 +1,21 @@
 package global
 
 import (
+	services "sophliteos/mvc/services/version"
+	"sophliteos/mvc/types"
 	"time"
 )
 
 var (
 	TimeOut          time.Duration
 	OtaTimeOut       time.Duration
+	Version          services.BuildInfo
 	BlockAllRequests bool
-	PicDir           string
+	DeviceType       string
+	SSmLists         types.SsmList
+	SdkVersion       string
+	AlgoFlag         bool
+	Resource         types.Resource
+	PcieResource     types.PcieResource
+	Arch             string
 )

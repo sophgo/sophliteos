@@ -1,4 +1,13 @@
-release/algoliteos*
+release/sophliteos*
+
+sophliteos
+
 .vscode/
+
+
+build/release*
+
+
+build/sophliteos/data/sophliteos/*
+
 test
-algoliteos

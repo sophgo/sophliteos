@@ -1,7 +1,7 @@
 package config
 
 import (
-	"algoliteos/logger"
+	"sophliteos/logger"
 	"sync"
 
 	"github.com/fsnotify/fsnotify"
@@ -13,68 +13,29 @@ const (
 )
 
 var Conf Config
-var JsonConf Config
-var Event Config
 
 func LoadConfig() {
 	Conf = Config{}
-	Conf.name = "algoliteos"
+	Conf.name = "sophliteos"
 	Conf.v = viper.New()
 
-	v := Conf.Application.v
+	v := Conf.v
 	v.AddConfigPath(configurePath)
 	v.SetConfigName(Conf.name)
 	v.SetConfigType("yaml")
 
-	if err := v.ReadInConfig(); err != nil { // viper解析配置文件
-		logger.Info("load config path: %s, error: %s", configurePath, err)
-	}
-
-	Event = Config{}
-	Event.name = "events"
-	Event.v = viper.New()
-
-	k := Event.Application.v
-	k.AddConfigPath(configurePath)
-	k.SetConfigName(Event.name)
-	k.SetConfigType("yaml")
-
-	if err := k.ReadInConfig(); err != nil { // viper解析配置文件
-		logger.Info("load config path: %s, error: %s", configurePath, err)
-	}
-
-	JsonConf = Config{}
-	JsonConf.name = "event"
-	JsonConf.v = viper.New()
-
-	j := JsonConf.Application.v
-	j.AddConfigPath(configurePath)
-	j.SetConfigName(JsonConf.name)
-	j.SetConfigType("json")
-
-	if err := j.ReadInConfig(); err != nil { // viper解析配置文件
-		logger.Info("load config path: %s, error: %s", configurePath, err)
-	}
-
 	exists := true
+	if err := v.ReadInConfig(); err != nil { // viper解析配置文件
+		logger.Debug("load config path: %s, error: %s", configurePath, err)
+		exists = false
+	}
+
 	if exists {
 		// 监控配置文件变化并热加载程序
 		watchConfig(v, func(in fsnotify.Event) {
 			logger.Info("Config file changed: %s", in.Name)
-			v.ReadInConfig()
-		})
-
-		watchConfig(k, func(in fsnotify.Event) {
-			logger.Info("Config file changed: %s", in.Name)
-			k.ReadInConfig()
-		})
-
-		watchConfig(j, func(in fsnotify.Event) {
-			logger.Info("Config file changed: %s", in.Name)
-			j.ReadInConfig()
 		})
 	}
-
 }
 
 type Application struct {

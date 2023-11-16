@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"algoliteos/logger"
-	"algoliteos/mvc"
 	"context"
 	"net/http"
-
+	"sophliteos/logger"
+	mvc "sophliteos/mvc/core"
+	error2 "sophliteos/mvc/error"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +31,7 @@ func TimeoutMiddleware(timeOut time.Duration) gin.HandlerFunc {
 			// 请求超时，执行超时逻辑
 			logger.Error("timeout on %s %s", c.Request.Method, c.Request.URL.Path)
 			c.Abort()
-			c.JSON(http.StatusGatewayTimeout, mvc.FailWithMsg(mvc.UpgradeErr, "传输超时"))
+			c.JSON(http.StatusGatewayTimeout, mvc.FailWithMsg(error2.UpgradeErr, "传输超时"))
 		}
 	}
 }

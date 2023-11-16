@@ -3,8 +3,8 @@ package main
 import (
 	"time"
 
-	"algoliteos/initialization"
-	"algoliteos/logger"
+	"sophliteos/initialization"
+	"sophliteos/logger"
 )
 
 func main() {
@@ -18,5 +18,4 @@ func main() {
 	if err != nil {
 		logger.Error("An error occurred starting HTTP listener %v", err)
 	}
-
 }

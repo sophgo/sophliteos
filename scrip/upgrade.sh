@@ -1,18 +1,8 @@
-#!/bin/bash
+mkdir -p /etc/sophliteos/config /var/log/sophliteos /var/lib/sophliteos/db /data/sophliteos
+rm -rf /var/lib/sophliteos/dist
+cp -r dist /var/lib/sophliteos/
 
-if [[ ! -f /etc/systemd/system/algoliteos.service ]]; then
-  echo "文件不存在，执行安装脚本..."
-  /bin/bash install.sh 
-  wait $!
-  echo "安装脚本执行完毕，退出脚本。"
-  exit 0
-fi
+cp config/sophliteos.yaml /etc/sophliteos/config
+cp release_version.txt /var/lib/sophliteos
+# cp database/sophliteos.db /var/lib/sophliteos/db
 
-
-systemctl stop algoliteos.service
-
-cp algoliteos /bin/
-# cp config/event.yaml /etc/sophliteos/config
-# cp config/kaola.json /etc/sophliteos/config
-
-systemctl start algoliteos.service

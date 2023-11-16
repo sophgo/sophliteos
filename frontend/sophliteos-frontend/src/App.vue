@@ -1,0 +1,28 @@
+<template>
+  <ConfigProvider :locale="getAntdLocale">
+    <AppProvider>
+      <RouterView />
+    </AppProvider>
+  </ConfigProvider>
+</template>
+
+<script lang="ts" setup>
+  import { ConfigProvider } from 'ant-design-vue';
+  import { AppProvider } from '/@/components/Application';
+  import { useTitle } from '/@/hooks/web/useTitle';
+  import { useLocale } from '/@/locales/useLocale';
+  import 'dayjs/locale/zh-cn';
+  import { useDeviceInfo } from '/@/store/modules/overview';
+  import { storeToRefs } from 'pinia';
+
+  const deviceInfoStore = useDeviceInfo();
+  const { deviceInfo } = storeToRefs(deviceInfoStore);
+  if (!deviceInfo.value.deviceSn) {
+    deviceInfoStore.getDeviceInfo().then(() => {});
+  }
+  // support Multi-language
+  const { getAntdLocale } = useLocale();
+
+  // Listening to page changes and dynamically changing site titles
+  useTitle();
+</script>

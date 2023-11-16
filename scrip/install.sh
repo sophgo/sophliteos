@@ -2,26 +2,21 @@
 
 set -e
 
-if [[ -f /etc/systemd/system/algoliteos.service ]]; then
-  systemctl stop algoliteos.service
-  systemctl disable algoliteos.service
-fi
-rm -rf /data/pictures
-mkdir -p /etc/sophliteos/config /var/log/sophliteos /data/pictures
 
-cp algoliteos /bin
-cp config/algoliteos.yaml /etc/sophliteos/config
-cp config/events.yaml /etc/sophliteos/config
-cp config/event.json /etc/sophliteos/config
-cp database/algoliteos.db /var/lib/sophliteos/db
-cp algoliteos.service /etc/systemd/system/
-
-active_interface=$(ip route get 8.8.8.8 | awk 'NR==1 {print $5}')
-if [[ ! -z $active_interface ]];then
-    LOCAL_IP=`ip -4 addr show dev "$active_interface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}'`
-    sed -i "s/upload: 127.0.0.1:8081/upload: $LOCAL_IP:8081/" /etc/sophliteos/config/algoliteos.yaml
+if [[ -f /etc/systemd/system/sophliteos.service ]]; then
+  systemctl stop sophliteos.service
+  systemctl disable sophliteos.service
 fi
+mkdir -p /etc/sophliteos/config /var/log/sophliteos /var/lib/sophliteos/db /data/sophliteos
+rm -rf /var/lib/sophliteos/dist
+
+cp -r dist /var/lib/sophliteos/
+cp sophliteos /bin
+cp config/sophliteos.yaml /etc/sophliteos/config
+cp database/sophliteos.db /var/lib/sophliteos/db
+cp sophliteos.service /etc/systemd/system/
+cp release_version.txt /var/lib/sophliteos
 
 systemctl daemon-reload
-systemctl enable algoliteos.service
-systemctl start algoliteos.service
+systemctl enable sophliteos.service
+systemctl start sophliteos.service

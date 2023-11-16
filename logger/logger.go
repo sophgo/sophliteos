@@ -287,7 +287,6 @@ func (logObj *Logger) doRotate() {
 	// 日志按天切换文件，日志对象记录了程序启动时的时间，当当前时间和程序启动的时间不一致
 	// 则会启动到这个函数来改变文件
 	// 首先关闭文件句柄，把当前日志改名为昨天，再创建新的文件句柄，将这个文件句柄赋值给log对象
-	// 最后尝试删除5天前的日志
 	fmt.Println("doRotate run")
 
 	defer func() {
@@ -344,7 +343,7 @@ func DeleteHistoryLog() {
 
 	dir, _ := filepath.Abs(filepath.Dir("/var/log/sophliteos/"))
 	// 获取目录下所有文件
-	files, err := filepath.Glob(filepath.Join(dir, "algo.log.*"))
+	files, err := filepath.Glob(filepath.Join(dir, "sophliteos.log.*"))
 	if err != nil {
 		fmt.Printf("无法获取文件列表: %v\n", err)
 		return
@@ -354,7 +353,7 @@ func DeleteHistoryLog() {
 	for _, file := range files {
 		// 解析文件名中的日期部分
 		fileName := filepath.Base(file)
-		dateStr := fileName[len("algo.log."):]
+		dateStr := fileName[len("sophliteos.log."):]
 		fileDate, err := time.Parse("20060102", dateStr)
 		if err != nil {
 			fmt.Printf("无法解析文件日期: %v\n", err)

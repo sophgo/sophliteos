@@ -1,11 +1,11 @@
 package v1
 
 import (
-	"algoliteos/api/v1/algorithm"
+	"sophliteos/api/v1/system"
 )
 
 type ApiGroup struct {
-	AlgoGroup algorithm.AlgorithmGroup
+	SystemApiGroup system.ApiGroup
 }
 
 var ApiGroupApp = new(ApiGroup)
