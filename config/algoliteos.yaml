@@ -1,0 +1,23 @@
+server:
+  algoPort: 8081
+  timeout: 3m
+  www: /var/lib/sophliteos/dist
+
+log:
+  path: /var/log/sophliteos
+  level: INFO
+
+db:
+  path: /var/lib/sophliteos/db/algoliteos.db
+  save-days: 90
+
+media:
+  host: 127.0.0.1:26080
+dir: 
+  source: /data/pictures
+  maxsize: 1000
+
+algorithm:
+  host: 127.0.0.1:35001
+
+upload: 127.0.0.1:8081
