@@ -20,6 +20,8 @@ func Routers() *gin.Engine {
 
 	// Router := gin.Default()
 
+	Router.MaxMultipartMemory = 64 << 20
+
 	// 创建一个反向代理到算法业务
 	algoURL, _ := url.Parse("http://localhost:8081")
 	proxy := httputil.NewSingleHostReverseProxy(algoURL)

@@ -1,17 +1,20 @@
 <template>
-  <PageWrapper :title="t('routes.dashboard.sysSoft')" :content="content">
+  <PageWrapper
+    :title="t('routes.dashboard.sysSoft')"
+    :content="t('routes.dashboard.content.sysContent')"
+  >
     <div style="display: flex; flex-direction: row; margin-bottom: 20px">
-      <div style="background-color: white" v-if="!deviceStore.isSingleBoard">
-        <ControlForm />
+      <div style="background-color: white; padding-bottom: 10px" v-if="!deviceStore.isSingleBoard">
+        <ControlForm :isSysSoft="true" />
       </div>
       <div style="background-color: white; width: 100%" v-else>
-        <ControlForm />
+        <ControlForm :isSysSoft="true" />
       </div>
       <div
         style="background-color: white; margin-left: 20px; width: 100%"
         v-if="!deviceStore.isSingleBoard"
       >
-        <CoreForm ref="core" />
+        <CoreForm ref="core" :isSysSoft="true" />
       </div>
     </div>
     <List />
@@ -24,13 +27,7 @@
   import List from './components/list.vue';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { useDeviceInfo } from '/@/store/modules/overview';
-  import { ref } from 'vue';
   const deviceStore = useDeviceInfo();
-  const content = ref('');
+
   const { t } = useI18n();
-  if (deviceStore.isSingleBoard) {
-    content.value = t('routes.dashboard.content.sysContent');
-  } else {
-    content.value = t('routes.dashboard.content.Content');
-  }
 </script>

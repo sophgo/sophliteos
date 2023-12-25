@@ -5,6 +5,7 @@ import { defineStore } from 'pinia';
 import { LOCK_INFO_KEY } from '/@/enums/cacheEnum';
 import { Persistent } from '/@/utils/cache/persistent';
 import { useUserStore } from './user';
+import md5 from 'md5';
 
 interface LockState {
   lockInfo: Nullable<LockInfo>;
@@ -41,7 +42,7 @@ export const useLockStore = defineStore({
           const username = userStore.getUserInfo?.username;
           const res = await userStore.login({
             username,
-            password: password!,
+            password: md5(md5(password)),
             goHome: false,
             mode: 'none',
           });

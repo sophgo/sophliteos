@@ -9,7 +9,7 @@
             v-model:value="deviceName"
             ref="deviceNameInput"
             @blur="handleBlur"
-            @keyup.enter="handleBlur"
+            @keyup.enter="handleBlur1"
           />
           <a-tooltip :title="t('overview.device.editType')" placement="right" :visible="editType">
             <EditOutlined
@@ -125,7 +125,9 @@
       deviceInfoStore.updateDevice('deviceName', deviceNameTrim);
     }
   };
-
+  const handleBlur1 = () => {
+    edit.value = false;
+  };
   // 动态运行时间
   const dynTime = computed(() => {
     return getFormatTime(deviceInfo.value.runTime, t);

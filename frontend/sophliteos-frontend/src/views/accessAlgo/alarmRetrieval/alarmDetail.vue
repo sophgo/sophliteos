@@ -1,33 +1,37 @@
 <template>
   <div class="info">
     <div class="left-box">
-      <Descriptions :column="1" layout="horizontal" :title="t('alarmRetrieval.alarm.alarmDetail')">
-        <DescriptionsItem>
+      <a-descriptions
+        :column="1"
+        layout="horizontal"
+        :title="t('alarmRetrieval.alarm.alarmDetail')"
+      >
+        <a-descriptions-item>
           <img :src="image" alt="" class="img" />
-        </DescriptionsItem>
-      </Descriptions>
+        </a-descriptions-item>
+      </a-descriptions>
     </div>
     <div class="right-box">
-      <Descriptions :column="1" layout="horizontal" :title="t('alarmRetrieval.alarm.detailInfo')">
-        <DescriptionsItem :label="t('alarmRetrieval.alarm.alarmType')">{{
+      <a-descriptions :column="1" layout="horizontal" :title="t('alarmRetrieval.alarm.detailInfo')">
+        <a-descriptions-item :label="t('alarmRetrieval.alarm.alarmType')">{{
           option[iamgeInfo.alarmType]
-        }}</DescriptionsItem>
-        <DescriptionsItem :label="t('alarmRetrieval.alarm.captureTime')">{{
+        }}</a-descriptions-item>
+        <a-descriptions-item :label="t('alarmRetrieval.alarm.captureTime')">{{
           dayjs(iamgeInfo.time).format('YYYY-MM-DD HH:mm:ss')
-        }}</DescriptionsItem>
-        <DescriptionsItem :label="t('dataSource.videoManage.deviceName')">{{
+        }}</a-descriptions-item>
+        <a-descriptions-item :label="t('dataSource.videoManage.deviceName')">{{
           iamgeInfo.deviceName
-        }}</DescriptionsItem>
+        }}</a-descriptions-item>
         <!-- <a-descriptions-item :label="t('alarmRetrieval.alarm.confidenceLevel')">{{
           iamgeInfo.itemsInBox[0].confidence
         }}</a-descriptions-item> -->
-      </Descriptions>
+      </a-descriptions>
     </div>
   </div>
 </template>
-<script lang="ts">
+<script setup>
   import { Descriptions, DescriptionsItem } from 'ant-design-vue';
-  import { defineComponent, onMounted, ref } from 'vue';
+  import { onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { getAlarmImage } from '/@/api/alrmRetrieval/index';
   import { storeToRefs } from 'pinia';
@@ -36,44 +40,31 @@
   import { useI18n } from '/@/hooks/web/useI18n';
   import { drawRectOnImage } from '/@/utils/image/index';
   import dayjs from 'dayjs';
-  export default defineComponent({
-    name: 'AlarmDetail',
-    components: { Descriptions, DescriptionsItem },
+  const { t } = useI18n();
+  const ADescriptions = Descriptions;
+  const ADescriptionsItem = DescriptionsItem;
+  const route = useRoute();
+  const url = ref(route.params?.image);
+  const image = ref();
 
-    setup() {
-      const { t } = useI18n();
-      const route = useRoute();
-      const url = ref(route.params?.image);
-      const image = ref();
-
-      const store = alarmInfo();
-      const { iamgeInfo } = storeToRefs(store);
-      onMounted(() => {
-        getImage(url);
-      });
-
-      async function getImage(url) {
-        await getAlarmImage(url.value).then((res) => {
-          const myBlob = new window.Blob([res.data], { type: 'image/jpeg' });
-          drawRectOnImage(
-            window.URL.createObjectURL(myBlob),
-            iamgeInfo.value.boxes,
-            iamgeInfo.value.itemsInBox,
-          ).then((res) => {
-            image.value = res;
-          });
-        });
-      }
-      return {
-        t,
-        getImage,
-        dayjs,
-        option,
-        iamgeInfo,
-        image,
-      };
-    },
+  const store = alarmInfo();
+  const { iamgeInfo } = storeToRefs(store);
+  onMounted(() => {
+    getImage(url);
   });
+
+  async function getImage(url) {
+    await getAlarmImage(url.value).then((res) => {
+      const myBlob = new window.Blob([res.data], { type: 'image/jpeg' });
+      drawRectOnImage(
+        window.URL.createObjectURL(myBlob),
+        iamgeInfo.value.boxes,
+        iamgeInfo.value.itemsInBox,
+      ).then((res) => {
+        image.value = res;
+      });
+    });
+  }
 </script>
 <style lang="less" scoped>
   .info {

@@ -129,6 +129,12 @@
   const loading = ref(false);
   const deviceInfoStore = useDeviceInfo();
   const { deviceStatus, deviceInfo, originData } = storeToRefs(deviceInfoStore);
+  if (!deviceInfo.value.deviceSn) {
+    loading.value = true;
+    deviceInfoStore.getDeviceInfo().then(() => {
+      loading.value = false;
+    });
+  }
 
   const activeKey = ref('control');
   const chipStatus = {

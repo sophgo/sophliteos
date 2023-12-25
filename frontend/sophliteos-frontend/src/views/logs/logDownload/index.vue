@@ -19,6 +19,12 @@
   import { LogDownload } from '/@/api/logs/index';
   // import { useMessage } from '/@/hooks/web/useMessage';
   // const { createMessage } = useMessage();
+  import { useDeviceInfo } from '/@/store/modules/overview';
+  const deviceStore = useDeviceInfo();
+
+  if (!deviceStore.deviceType) {
+    deviceStore.getDeviceInfo();
+  }
   const { t } = useI18n();
   const compState = reactive({
     loading: false,

@@ -1,8 +1,6 @@
 package mvc
 
 import (
-	"fmt"
-
 	"sophliteos/client/ssm"
 	"sophliteos/logger"
 	error2 "sophliteos/mvc/error"
@@ -47,7 +45,8 @@ func FailWithMsg(code int, msg string) types.Result {
 func HandleError(err error, codes ...interface{}) {
 	if err != nil {
 		if len(codes) > 0 {
-			panic(fmt.Sprintf("%v\n%s", codes, err.Error()))
+			// panic(fmt.Sprintf("%v\n%s", codes, err.Error()))
+			logger.Error("%v\n%s", codes, err.Error())
 		} else {
 			// panic(err.Error())
 		}

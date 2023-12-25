@@ -75,7 +75,7 @@ export const IpDoubleCheck = (_rule, value) => {
 // 密码校验：大写字母，小写字母、数字，特征字符至少3种，长度8-16位
 export const passwordCheck = (_rule, value) => {
   if (value === '') {
-    return Promise.reject(t('layout.header.inputOldPassword'));
+    return Promise.reject(t('layout.header.inputNewPassword'));
   } else {
     const password =
       /^(?![\da-z]+$)(?![\dA-Z]+$)(?![\d!@#$%^&*]+$)(?![a-zA-Z]+$)(?![a-z!@#$%^&*]+$)(?![A-Z!@#$%^&*]+$)[\da-zA-z!@#$%^&*]{8,16}$/;

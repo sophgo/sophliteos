@@ -22,8 +22,8 @@ export const localeList: DropMenu[] = [
     text: '简体中文',
     event: LOCALE.ZH_CN,
   },
-  {
-    text: 'English',
-    event: LOCALE.EN_US,
-  },
+  // {
+  //   text: 'English',
+  //   event: LOCALE.EN_US,
+  // },
 ];

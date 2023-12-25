@@ -89,8 +89,8 @@ func InitDB() {
 	c := cron.New(cron.WithSeconds())
 	_, err = c.AddFunc("0 0 0 * * ?", func() {
 		date := time.Now().Add(-time.Hour * 24 * time.Duration(saveDays))
-		logger.Debug("清理数据：%s %v", saveDays, date)
-		_ = DeleteAlarmByCreatedAt(date)
+		logger.Info("清理数据：%s %v", saveDays, date)
+		_ = DeleteOldestAlarms()
 		_ = DeleteOptLogByCreatedAt(date)
 	})
 	if err != nil {

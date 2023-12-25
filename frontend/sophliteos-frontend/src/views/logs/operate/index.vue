@@ -8,13 +8,19 @@
   import { getBasicColumns } from './tableData';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { getOperRecord } from '/@/api/logs/index';
+  import { useDeviceInfo } from '/@/store/modules/overview';
+  const deviceStore = useDeviceInfo();
 
+  if (!deviceStore.deviceType) {
+    deviceStore.getDeviceInfo();
+  }
   const { t } = useI18n();
   const operateType = [
     {
       label: t('logs.operate.operateType.login'),
       value: '/api/login',
     },
+
     {
       label: t('logs.operate.operateType.logout'),
       value: '/api/logout',
@@ -35,14 +41,27 @@
       label: t('logs.operate.operateType.systemUpdate'),
       value: '/api/device/ota/upgrade',
     },
+    {
+      label: t('logs.operate.operateType.UpgradeUpload'),
+      value: '/api/device/ota/file',
+    },
+    {
+      label: '控制板SSM升级',
+      value: '/api/ssm/upgrade',
+    },
+    {
+      label: 'sophliteos升级',
+      value: '/api/upgrade',
+    },
+
     // {
     //   label: t('logs.operate.operateType.coreUpgrade'),
     //   value: '/api/device/ota/upgrade',
     // },
-    {
-      label: t('logs.operate.operateType.rollback'),
-      value: '/api/device/ota/rollback',
-    },
+    // {
+    //   label: t('logs.operate.operateType.rollback'),
+    //   value: '/api/device/ota/rollback',
+    // },
   ];
   const [registerTable] = useTable({
     title: t('logs.operate.title'),

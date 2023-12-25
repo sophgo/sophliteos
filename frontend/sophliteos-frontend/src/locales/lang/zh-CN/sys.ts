@@ -9,7 +9,7 @@ export default {
     networkException: '网络异常',
     networkExceptionMsg: '网络异常，请检查您的网络连接是否正常!',
 
-    errMsg401: '用户没有权限（令牌、用户名、密码错误）!',
+    errMsg401: '登录已过期，请重新登录！',
     errMsg403: '用户得到授权，但是访问是被禁止的。!',
     errMsg404: '网络请求错误,未找到该资源!',
     errMsg405: '网络请求错误,请求方法未允许!',
@@ -102,7 +102,7 @@ export default {
   },
   form: {
     placeholder: '请输入',
-    phNumber: '请填写0～100的整数',
+    phNumber: '请填写1-100的整数',
   },
   table: {
     selectAll: '全选',
@@ -121,6 +121,7 @@ export default {
     btnText: '上传文件：',
     update: '升级',
     upload: '上传',
+    upPackage: '升级包',
   },
   copySuccess: '复制成功',
   tips: '提示',

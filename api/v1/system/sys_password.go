@@ -27,7 +27,6 @@ func (b *PasswordApi) PasswordMod(c *gin.Context) {
 
 	err := mvc.Valid(c.Request, req)
 	if err != nil {
-		// panic(err)
 		errStr := fmt.Sprintf("%v", err)
 		logger.Error("error: %s", errStr)
 		c.JSON(http.StatusUnprocessableEntity, mvc.FailWithMsg(1, errStr))
@@ -35,7 +34,7 @@ func (b *PasswordApi) PasswordMod(c *gin.Context) {
 	}
 	code := check(req.NewPassword)
 	if code != error2.Ok {
-		c.JSON(http.StatusOK, mvc.Fail(code, "New Password Not Valid"))
+		c.JSON(http.StatusOK, mvc.Fail(code, "密码无效"))
 		return
 	}
 	user := mvc.GetUser(mvc.Token(c.Request))
@@ -45,7 +44,8 @@ func (b *PasswordApi) PasswordMod(c *gin.Context) {
 		c.JSON(http.StatusOK, mvc.Ok())
 		return
 	} else {
-		c.JSON(http.StatusOK, mvc.Fail(error2.PwdNotEqErr, "Pwd Not Eq"))
+		logger.Error("旧密码错误")
+		c.JSON(http.StatusOK, mvc.Fail(error2.PwdNotEqErr, "旧密码错误"))
 		return
 	}
 

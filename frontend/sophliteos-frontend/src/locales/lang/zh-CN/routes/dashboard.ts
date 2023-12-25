@@ -13,7 +13,6 @@ export default {
   maintenance: '设备运维',
   appSoft: '应用升级',
   sysSoft: '系统升级',
-  sysSetting: '系统配置',
   softUpdate: '软件升级',
   ssmUpdate: 'SSM升级',
   liteOsUpdate: 'LiteOS升级',
@@ -33,9 +32,6 @@ export default {
   logDownload: '日志下载',
   content: {
     sysContent: '系统OTA升级,适用于版本升级,不支持降级和跨版本升级,否则可能导致系统损坏。',
-    Content: `系统SDK OTA升级，不支持跨3.0版本升级,否则可能导致系统损坏。  
-     1.  控制板升级请上传卡刷包文件，控制板升级完成后，再进行核心板升级，选择需要升级的核心板，无需上传文件，直接点击升级。
-     2.  核心板升级，上传tftp刷机包，选择核心板进行升级。传错升级包可能导致系统损坏，请谨慎操作。`,
     ssmContent:
       'SSM软件是部署于AI算力设备上的管理服务,提供系统管理、系统升级、算力设备信息获取、算法应用部署等功能。',
     liteContent:

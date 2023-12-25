@@ -58,6 +58,12 @@ func (b *SsmUpgradeApi) Upgrade(c *gin.Context) {
 		return
 	}
 
+	if ssmFileName != "bmssm-arm64-v1.2.0.tgz" {
+		logger.Error("升级包上传错误")
+		c.JSON(http.StatusOK, mvc.FailWithMsg(-1, "升级包上传错误"))
+		return
+	}
+
 	if module == Core {
 		sns = c.Request.FormValue("sns")
 		user, _ = base64.StdEncoding.DecodeString(c.Request.FormValue("user"))
@@ -72,8 +78,6 @@ func (b *SsmUpgradeApi) Upgrade(c *gin.Context) {
 
 	global.BlockAllRequests = true
 
-	c.JSON(http.StatusOK, mvc.OkWithMsg("正在升级"))
-
 	if module == Ctrl {
 		err = installSsmCtrl()
 		if err != nil {
@@ -83,7 +87,10 @@ func (b *SsmUpgradeApi) Upgrade(c *gin.Context) {
 			return
 		}
 		services.SaveOptLog(c.Request, "控制板SSM升级")
+		c.JSON(http.StatusOK, mvc.OkWithMsg("升级成功"))
+
 	} else {
+		c.JSON(http.StatusOK, mvc.OkWithMsg("核心板正在升级ssm，预计5分钟升级完成"))
 		err = scpInstallSsm(sns, string(user), string(pwd))
 		if err != nil {
 			logger.Error("core update ssm failed:%v", err)
@@ -92,6 +99,7 @@ func (b *SsmUpgradeApi) Upgrade(c *gin.Context) {
 			return
 		}
 		services.SaveOptLog(c.Request, "核心板SSM升级")
+
 	}
 
 	global.BlockAllRequests = false

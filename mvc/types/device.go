@@ -57,24 +57,6 @@ type Resource struct {
 	DiskCount         ResourceCount     `json:"diskCount"`
 }
 
-// Pcie设备信息
-type PcieResource struct {
-	DeviceSn          string            `json:"deviceSn"`
-	DeviceName        string            `json:"deviceName"`
-	DeviceType        string            `json:"deviceType"`
-	SdkVersion        string            `json:"sdkVersion"`
-	OperatingSystem   string            `json:"operatingSystem"`
-	RunTime           string            `json:"runTime"`
-	BuildTime         string            `json:"buildTime"`
-	BmssmVersion      string            `json:"bmssmVersion"`
-	DeviceIP          string            `json:"deviceIp"`
-	Cpu               CPU               `json:"cpu"`
-	Memory            Memory            `json:"memory"`
-	Disk              []DiskInfo        `json:"disk"`
-	NetCard           []NetCard         `json:"netCard"`
-	CoreComputingUnit CoreComputingUnit `json:"coreComputingUnit"`
-}
-
 type ResourceCount struct {
 	Health    int     `json:"health"`
 	UnHealth  int     `json:"unHealth"`
@@ -101,15 +83,6 @@ type Disk struct {
 	ID    string  `json:"id"`
 	Total float64 `json:"total"`
 	Usage float64 `json:"usage"`
-}
-
-type DiskInfo struct {
-	DiskName string  `json:"diskName"`
-	DiskSn   string  `json:"diskSn"`
-	Total    float64 `json:"total"`
-	Free     float64 `json:"free"`
-	IoRate   int     `json:"ioRate"`
-	MountOn  string  `json:"mountOn"`
 }
 
 type NetCard struct {
@@ -154,7 +127,6 @@ type Chip struct {
 	TpuUtililizationRate          int      `json:"tpuUtililizationRate"`
 	TheoretialCalculationCapacity float64  `json:"theoretialCalculationCapacity"`
 	Deploys                       []Deploy `json:"deploys"`
-	ChipType                      int      `json:"chipType"`
 }
 
 type Deploy struct {

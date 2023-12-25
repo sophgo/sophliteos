@@ -16,6 +16,4 @@ var (
 	SdkVersion       string
 	AlgoFlag         bool
 	Resource         types.Resource
-	PcieResource     types.PcieResource
-	Arch             string
 )

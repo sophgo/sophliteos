@@ -8,7 +8,6 @@ import (
 	"sophliteos/global"
 	"sophliteos/logger"
 	mvc "sophliteos/mvc/core"
-	error2 "sophliteos/mvc/error"
 	"sophliteos/mvc/i18n"
 	services "sophliteos/mvc/services/opt"
 	"syscall"
@@ -33,23 +32,29 @@ func (b *UpgradeApi) Upgrade(c *gin.Context) {
 	filename, err = saveFile(c.Request, "/data/sophliteos/")
 	if err != nil {
 		logger.Error("update failed", err)
-		c.JSON(http.StatusOK, mvc.FailWithMsg(error2.UpgradeErr, "操作失败"))
+		c.JSON(http.StatusOK, mvc.FailWithMsg(-1, "操作失败"))
 		return
 	}
 
 	if filename == "algoliteos-linux_arm64.tgz" || filename == "algoliteos-linux_amd64.tgz" {
 		if err := upgradeAlgo(); err != nil {
-			c.JSON(http.StatusOK, mvc.FailWithMsg(error2.UpgradeErr, "操作失败"))
+			c.JSON(http.StatusOK, mvc.FailWithMsg(-1, "操作失败"))
 		} else {
 			c.JSON(http.StatusOK, mvc.Ok())
 		}
 		return
 	}
 
+	if filename != "sophliteos-linux_arm64.tgz" {
+		logger.Error("升级包上传错误")
+		c.JSON(http.StatusOK, mvc.FailWithMsg(-1, "升级包上传错误"))
+		return
+	}
+
 	err = upgradeLiteOs()
 	if err != nil {
 		logger.Error("upgrade failed", err)
-		c.JSON(http.StatusOK, mvc.FailWithMsg(error2.UpgradeErr, "操作失败"))
+		c.JSON(http.StatusOK, mvc.FailWithMsg(-1, "操作失败"))
 		return
 	}
 	global.BlockAllRequests = true
@@ -57,7 +62,7 @@ func (b *UpgradeApi) Upgrade(c *gin.Context) {
 
 	// 重新执行更新后的程序
 	go restartUpgradedProgram()
-	c.JSON(http.StatusOK, mvc.OkWithMsg("操作成功"))
+	c.JSON(http.StatusOK, mvc.OkWithMsg("升级成功，LiteOS正在重启，请一分钟后刷新页面重新进入"))
 }
 
 func upgradeLiteOs() error {

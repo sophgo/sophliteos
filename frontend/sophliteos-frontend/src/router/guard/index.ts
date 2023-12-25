@@ -30,6 +30,7 @@ export function setupRouterGuard(router: Router) {
 /**
  * Hooks for handling page state
  */
+
 function createPageGuard(router: Router) {
   const loadedPageMap = new Map<string, boolean>();
 
@@ -38,14 +39,7 @@ function createPageGuard(router: Router) {
     to.meta.loaded = !!loadedPageMap.get(to.path);
     // Notify routing changes
     setRouteChange(to);
-    const isLoginPage = to.path === '/login';
-    if (!isLoginPage) {
-      const deviceInfoStore = useDeviceInfo();
-      const { deviceInfo } = storeToRefs(deviceInfoStore);
-      if (!deviceInfo.value.deviceSn) {
-        deviceInfoStore.getDeviceInfo().then(() => {});
-      }
-    }
+
     return true;
   });
 
@@ -71,7 +65,13 @@ function createPageLoadingGuard(router: Router) {
       appStore.setPageLoadingAction(true);
       return true;
     }
-
+    if (to.path !== '/login') {
+      const deviceInfoStore = useDeviceInfo();
+      const { deviceInfo } = storeToRefs(deviceInfoStore);
+      if (!deviceInfo.value.deviceSn) {
+        deviceInfoStore.getDeviceInfo().then(() => {});
+      }
+    }
     return true;
   });
   router.afterEach(async () => {

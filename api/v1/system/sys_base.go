@@ -30,19 +30,17 @@ func (b *BaseApi) Login(c *gin.Context) {
 	body, _ := io.ReadAll(c.Request.Body)
 	json.Unmarshal(body, &req)
 
-	// fmt.Println(req)
-
 	userName := req.UserName
 	password := req.Password
 	if userName == "" || password == "" {
-		c.JSON(http.StatusOK, mvc.Fail(error2.InvalidUsernameOrPassword, "Invalid Username Or Password"))
+		c.JSON(http.StatusOK, mvc.Fail(error2.InvalidUsernameOrPassword, "用户名或密码错误"))
 		return
 	}
 
 	user, _ := database.QueryUserWithName(userName)
 	var token string
 	if user == nil || user.Password != password { // 验证密码
-		c.JSON(http.StatusOK, mvc.Fail(error2.InvalidUsernameOrPassword, "Invalid Username Or Password"))
+		c.JSON(http.StatusOK, mvc.Fail(error2.InvalidUsernameOrPassword, "用户名或密码错误"))
 		return
 	} else {
 		now := time.Now()
@@ -57,7 +55,8 @@ func (b *BaseApi) Login(c *gin.Context) {
 		}
 	}
 	mvc.SetUser(token, user)
-	services.SaveOptLog(c.Request, "系统登录")
+
+	services.SaveOptLog(c.Request, "登录")
 
 	c.JSON(http.StatusOK, mvc.Success(types.LoginResponse{
 		Token: token,
@@ -100,18 +99,40 @@ func (b *BaseApi) AlarmListen(c *gin.Context) {
 
 	logger.Debug("recive alarm:%s", string(data))
 
-	alarm := database.Alarm{
-		DeviceSn:      alarmRec.DeviceSn,
-		DeviceIp:      "",
-		CreatedAt:     time.Now(),
-		ComponentType: getType(alarmRec.Code),
-		Code:          alarmRec.Code,
-		Msg:           alarmRec.Msg,
+	if global.DeviceType == "" {
+		GetArmResource(c)
 	}
 
-	alarm.CoreUnitBoardSn = alarmRec.BoardSn
-	if alarm.CoreUnitBoardSn == "" {
-		alarm.CoreUnitBoardSn = alarmRec.DeviceSn
+	var alarm database.Alarm
+	switch global.DeviceType {
+	case "SE5", "SE7", "SE9":
+		alarm = database.Alarm{
+			DeviceSn:      global.Resource.DeviceSn,
+			DeviceIp:      "",
+			CreatedAt:     time.Now(),
+			ComponentType: getType(alarmRec.Code),
+			Code:          alarmRec.Code,
+			Msg:           alarmRec.Msg,
+		}
+		alarm.CoreUnitBoardSn = global.Resource.DeviceSn
+
+	default:
+		alarm = database.Alarm{
+			DeviceSn:      alarmRec.DeviceSn,
+			DeviceIp:      "",
+			CreatedAt:     time.Now(),
+			ComponentType: getType(alarmRec.Code),
+			Code:          alarmRec.Code,
+			Msg:           alarmRec.Msg,
+		}
+
+		alarm.CoreUnitBoardSn = alarmRec.BoardSn
+		if alarm.CoreUnitBoardSn == "" {
+			alarm.CoreUnitBoardSn = alarmRec.DeviceSn
+		}
+	}
+	if alarm.ComponentType == "disk" && alarmRec.Code < 0 {
+		alarm.Msg = "磁盘" + alarmRec.DiskName + ":  " + alarmRec.Msg
 	}
 
 	err := database.SaveAlarm(alarm)
@@ -139,6 +160,7 @@ func Register() {
 	json.Unmarshal(data, &req)
 
 	if req.Msg != "ok" {
+		logger.Info("algoliteos未运行服务")
 		return
 	}
 	logger.Info("注册到algoliteos服务成功")

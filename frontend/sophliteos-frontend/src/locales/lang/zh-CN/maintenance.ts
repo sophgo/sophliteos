@@ -1,7 +1,9 @@
 export default {
   appSoftUpdate: '应用软件升级',
   sysSoftUpdate: '系统软件升级',
-  updatedFiles: '已上传文件',
+  updatedFiles: '文件已就绪',
+  UnupdateFiles: '文件未上传',
+  upgradePackage: '已上传升级包',
   systemUpdate: {
     systemUpdate: '控制板升级',
     coreBoardUpdate: '核心板升级',
@@ -19,10 +21,12 @@ export default {
     controlStartUpload: '控制板开始升级，预计需要5分钟',
     softwareUpdateStatus: '软件正在升级，请您耐心等待！',
     selectNeedFile: '请选择需要上传的文件',
-    fileFormat: '仅支持上传.tgz格式文件',
+    fileFormat: '请选择需要上传的.tgz格式文件',
     startUpdate: '开始升级',
     updaing: '升级中',
     selectFile: '选择文件',
+    uploadFiles: '上传文件',
+    filesUploading: '文件上传中',
     taskList: {
       name: '任务名称',
       product: '设备类型',
@@ -58,7 +62,6 @@ export default {
     boardSn: '智算板SN',
     boardHost: '智算板Host',
     version: 'SSM版本',
-    ssmUpdate: 'SSM升级',
   },
   newworkSettings: {
     ipType: '网络连接方式',
@@ -106,16 +109,15 @@ export default {
   },
   threshold: {
     fanSpeed: '风扇转速',
-    boardTemperature: '主板温度',
+    boardTemperature: '板卡温度',
     coreTemperature: '芯片结温',
     cpuRate: 'cpu使用率',
     totalMemoryScale: '内存使用率',
     // memoryScale: '内存使用率',
     // videoScale: 'video内存使用率',
-    tpuScale: 'tpu内存使用率',
+    tpuScale: 'tpu芯片内存使用率',
     // externalHardDiskRate: '外挂存储使用率',
-    diskRate: '存储使用率',
+    diskRate: '磁盘使用率',
     title: '告警阈值配置',
-    cloud: '云平台配置',
   },
 };

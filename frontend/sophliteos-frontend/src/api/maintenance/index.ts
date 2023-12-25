@@ -28,7 +28,7 @@ enum Api {
 
 // IP地址设置
 export function ipSet(params: IpSetParams) {
-  return defHttp.post<BasicApiResponse>({ url: Api.IpSet, params });
+  return defHttp.post<BasicApiResponse>({ url: Api.IpSet, params }, { isTransformResponse: false });
 }
 
 // IP地址查询
@@ -52,10 +52,57 @@ export function upgradeApi(params, onUploadProgress: (progressEvent: ProgressEve
     {
       url: uploadUrl,
       onUploadProgress,
-      timeout: 1000 * 60 * 60 * 24,
+      // timeout: 1000 * 60 * 60 * 24,   超时时间改成15分钟
+      timeout: 1000 * 60 * 15,
       // @ts-ignore
       requestOptions: {
         ignoreCancelToken: false,
+        isReturnNativeResponse: true,
+      },
+    },
+    params,
+  );
+}
+export function checkFileList() {
+  return defHttp.get({
+    url: '/device/ota/list',
+  });
+}
+
+//上传文件
+export function checkFile(params, onUploadProgress: (progressEvent: ProgressEvent) => void) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: '/api/device/ota/file',
+      onUploadProgress,
+      timeout: 1000 * 60 * 60 * 24,
+      // timeout: 1000 * 60 * 15,超时时间改成15分钟
+      // @ts-ignore
+      requestOptions: {
+        ignoreCancelToken: false,
+        isTransformResponse: false,
+      },
+    },
+    params,
+  );
+}
+//分片上传文件
+export function uploadPartFile(params, onUploadProgress: (progressEvent: ProgressEvent) => void) {
+  return defHttp.uploadFile<UploadApiResult>(
+    {
+      url: '/api/device/ota/chunked',
+      onUploadProgress,
+      timeout: 1000 * 60 * 5,
+      // @ts-ignore
+      requestOptions: {
+        ignoreCancelToken: false,
+        isTransformResponse: false,
+        errorMessageMode: 'none',
+        retryRequest: {
+          isOpenRetry: true,
+          count: 2,
+          waitTime: 100,
+        },
       },
     },
     params,
@@ -68,10 +115,11 @@ export function upgradeSoftApi(params, onUploadProgress: (progressEvent: Progres
     {
       url: '/api/upgrade',
       onUploadProgress,
-      timeout: 1000 * 60 * 60 * 24,
+      timeout: 1000 * 60 * 15,
       // @ts-ignore
       requestOptions: {
         ignoreCancelToken: false,
+        isReturnNativeResponse: true,
       },
     },
     params,
@@ -84,10 +132,11 @@ export function upgradeSsmApi(params, onUploadProgress: (progressEvent: Progress
     {
       url: '/api/ssm/upgrade',
       onUploadProgress,
-      timeout: 1000 * 60 * 60 * 24,
+      timeout: 1000 * 60 * 15,
       // @ts-ignore
       requestOptions: {
         ignoreCancelToken: false,
+        isReturnNativeResponse: true,
       },
     },
     params,

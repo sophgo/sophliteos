@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"time"
 
 	"sophliteos/client/ssm"
 	"sophliteos/global"
@@ -142,12 +143,13 @@ func (b *IpApi) IpSet(c *gin.Context) {
 	// 修改ip
 	services.SaveOptLog(c.Request, "IP设置")
 
-	// c.JSON(http.StatusOK, mvc.Success("请求成功，请3分钟后重新访问本页面"))
+	c.JSON(http.StatusOK, mvc.OkWithMsg("请求成功"))
 
-	result, err := ssm.SetIP(ip)
-	mvc.HandleError(err, error2.SetIpErr)
-
-	c.JSON(http.StatusOK, mvc.Handle(result, error2.SetIpErr))
+	go func() {
+		time.Sleep(2 * time.Second)
+		_, err = ssm.SetIP(ip)
+		mvc.HandleError(err, error2.SetIpErr)
+	}()
 
 }
 

@@ -14,17 +14,12 @@
             :label="item.label"
             class="w-2/5"
           >
-            <a-input-number
-              v-model:value="formState[item.field]"
-              :placeholder="item.placeholder || placeholder"
-              :min="0"
-              :max="item.max || 100"
-            >
+            <a-input v-model:value="formState[item.field]" :placeholder="placeholder">
               <template #addonAfter>
                 <span v-if="item.unit" :style="{ color }">{{ item.unit }}</span>
                 <percentage-outlined v-else :style="{ color }" />
               </template>
-            </a-input-number>
+            </a-input>
           </a-form-item>
           <a-form-item class="w-2/5" />
           <a-form-item :wrapper-col="{ offset: 8, span: 16 }" class="w-2/5 !mr-1/2">
@@ -35,46 +30,33 @@
         </a-form>
       </a-skeleton>
     </a-tab-pane>
-    <a-tab-pane key="cloud" :tab="t('maintenance.threshold.cloud')">
-      <a-form
-        :model="CloudModel"
-        v-bind="formItemLayout"
-        class="flex flex-wrap justify-around"
-        size="large"
-      >
-        <a-form-item class="w-2/5" label="本机公网IP">
-          <a-input v-model:value="CloudModel.commonIP" />
-        </a-form-item>
-
-        <a-form-item class="w-2/5" label="云平台地址">
-          <a-input v-model:value="CloudModel.cloudIP" />
-        </a-form-item>
-        <a-form-item :wrapper-col="{ offset: 8, span: 16 }" class="w-2/5 !mr-1/2">
-          <a-button type="primary" @click="submitCloud" :loading="loading">{{
-            t('sys.btn.confirm')
-          }}</a-button>
-        </a-form-item>
-      </a-form>
-    </a-tab-pane>
   </a-tabs>
 </template>
 <script lang="ts" setup>
   import { reactive, ref, onMounted } from 'vue';
   import { PercentageOutlined } from '@ant-design/icons-vue';
   import type { UnwrapRef } from 'vue';
-  import { setAlarm, getAlarm, getComIP, modComIP } from '/@/api/maintenance/index';
+  import { setAlarm, getAlarm } from '/@/api/maintenance/index';
   import { Tabs } from 'ant-design-vue';
-
+  import { useMessage } from '/@/hooks/web/useMessage';
   import { useI18n } from '/@/hooks/web/useI18n';
   // import { useMessage } from '/@/hooks/web/useMessage';
 
   import { AlarmParams } from '/@/api/maintenance/model/index';
-  import { useMessage } from '/@/hooks/web/useMessage';
-  const { createMessage } = useMessage();
-
+  import { useDeviceInfo } from '/@/store/modules/overview';
+  const deviceStore = useDeviceInfo();
+  onMounted(() => {
+    if (!deviceStore.deviceType) {
+      deviceStore.getDeviceInfo().then(() => {
+        init();
+      });
+    } else {
+      init();
+    }
+  });
   // const { createErrorModal } = useMessage();
   const { t } = useI18n();
-
+  const { createMessage } = useMessage();
   const ATabs = Tabs;
   const ATabPane = Tabs.TabPane;
 
@@ -83,13 +65,13 @@
 
   const activeKey = ref('wan');
   const formItemList = [
-    {
-      label: t('maintenance.threshold.fanSpeed'),
-      field: 'fanSpeed',
-      unit: 'r/min',
-      placeholder: t('sys.form.placeholder'),
-      max: 1000000,
-    },
+    // {
+    //   label: t('maintenance.threshold.fanSpeed'),
+    //   field: 'fanSpeed',
+    //   unit: 'r/min',
+    //   placeholder: t('sys.form.placeholder'),
+    //   max: 1000000,
+    // }, 去掉风扇
     {
       label: t('maintenance.threshold.boardTemperature'),
       field: 'boardTemperature',
@@ -128,6 +110,10 @@
       label: t('maintenance.threshold.diskRate'),
       field: 'diskRate',
     },
+    {
+      label: 'tpu使用率',
+      field: 'tpuRate',
+    },
   ];
   const formState: UnwrapRef<AlarmParams> = reactive({
     fanSpeed: 0,
@@ -140,10 +126,7 @@
     tpuScale: 90,
     // externalHardDiskRate: 90,
     diskRate: 90,
-  });
-  const CloudModel = reactive({
-    commonIP: '',
-    cloudIP: '',
+    tpuRate: 90,
   });
   const formItemLayout = {
     labelCol: { span: 8 },
@@ -155,43 +138,67 @@
     const result = await getAlarm();
     pageLoading.value = false;
     if (result) {
-      formState.fanSpeed = result.fanSpeed;
+      formState.fanSpeed = 9999;
       formState.boardTemperature = result.boardTemperature;
       formState.coreTemperature = result.coreTemperature;
-      formState.cpuRate = result.cpuRate * 100;
-      formState.totalMemoryScale = result.totalMemoryScale * 100;
+      formState.cpuRate = Math.round(result.cpuRate * 100);
+      formState.totalMemoryScale = Math.round(result.totalMemoryScale * 100);
       // formState.systemScale = result.systemScale * 100;
       // formState.videoScale = result.videoScale * 100;
-      formState.tpuScale = result.tpuScale * 100;
+      formState.tpuScale = Math.round(result.tpuScale * 100);
       // formState.externalHardDiskRate = result.externalHardDiskRate * 100;
-      formState.diskRate = result.diskRate * 100;
-    }
-    const res = await getComIP();
-    if (res) {
-      CloudModel.commonIP = res.natIP;
-      CloudModel.cloudIP = res.serviceAddress.register.serviceAddress[0];
+      formState.diskRate = Math.round(result.diskRate * 100);
+      formState.tpuRate = Math.round(result.tpuRate * 100);
     }
   };
-  onMounted(() => {
-    init();
-  });
   const loading = ref(false);
+  function areAllPropertyValuesValid(obj) {
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key) && key !== 'fanSpeed') {
+        var value = obj[key];
+
+        // 使用正则表达式判断是否是整数
+        var isInteger = /^\d+$/.test(value);
+        // 判断整数范围
+        if (!isInteger || parseInt(value, 10) <= 0 || parseInt(value, 10) > 100) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
   const submitForm = async () => {
     try {
       loading.value = true;
-      const params = {
-        ...formState,
-      };
-      // 不需要转变的字段
-      const staticFields = ['fanSpeed', 'boardTemperature', 'coreTemperature'];
-      Object.keys(params).forEach((key) => {
-        if (!staticFields.includes(key)) {
-          params[key] = params[key] / 100;
+
+      const isParams = areAllPropertyValuesValid(formState);
+      if (!isParams) {
+        createMessage.error(placeholder, 2);
+        init();
+      } else {
+        const params = {
+          ...formState,
+        };
+        for (const key in params) {
+          if (params.hasOwnProperty(key)) {
+            params[key] = Number(params[key]);
+          }
         }
-      });
-      await setAlarm(params).then(() => {
-        createMessage.success('修改成功');
-      });
+        // 不需要转变的字段
+        const staticFields = ['fanSpeed', 'boardTemperature', 'coreTemperature'];
+        Object.keys(params).forEach((key) => {
+          if (!staticFields.includes(key)) {
+            params[key] = params[key] / 100;
+          }
+        });
+        await setAlarm(params)
+          .then(() => {
+            createMessage.success('操作成功');
+          })
+          .catch(() => {
+            createMessage.error('操作失败');
+          });
+      }
     } catch (error) {
       // createErrorModal({
       //   title: t('sys.api.errorTip'),
@@ -202,17 +209,4 @@
       loading.value = false;
     }
   };
-  async function submitCloud() {
-    const params = {
-      natIP: CloudModel.commonIP,
-      register: {
-        switch: 'on',
-        interval: 30,
-        serviceAddress: [CloudModel.cloudIP],
-      },
-    };
-    await modComIP(params).then(() => {
-      createMessage.success('修改成功');
-    });
-  }
 </script>

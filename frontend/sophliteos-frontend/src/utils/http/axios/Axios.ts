@@ -129,7 +129,9 @@ export class VAxios {
     } else {
       formData.append(customFilename, params.file);
     }
-
+    if (params.md5) {
+      formData.append('md5', params.md5);
+    }
     if (params.data) {
       Object.keys(params.data).forEach((key) => {
         const value = params.data![key];

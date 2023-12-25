@@ -52,4 +52,5 @@ type OptLog struct {
 	OperationType    string    `gorm:"column:operation_type" json:"operationType"`
 	OperationContent string    `gorm:"column:operation_content" json:"operationContent"`
 	OperationIP      string    `gorm:"column:operation_ip" json:"operationIp"`
+	OperationFunc    string    `gorm:"column:operation_func" json:"operationFunc"`
 }

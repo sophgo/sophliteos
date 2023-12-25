@@ -4,6 +4,7 @@ sophliteos
 
 .vscode/
 
+frontend/sophliteos-frontend
 
 build/release*
 

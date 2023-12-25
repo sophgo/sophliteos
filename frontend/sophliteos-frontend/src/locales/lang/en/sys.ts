@@ -127,6 +127,7 @@ export default {
     btnText: 'Upload File: ',
     update: 'Upgrade',
     upload: 'Upload',
+    upPackage: 'Upgrade Package',
   },
   copySuccess: 'Copy Success',
   tips: 'Warning',

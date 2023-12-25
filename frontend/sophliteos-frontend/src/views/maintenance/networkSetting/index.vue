@@ -285,9 +285,13 @@
           const params = {
             ...netMap[activeKey.value],
           };
-          ipSet(params).catch(() => {
-            createMessage.error(t('maintenance.newworkSettings.msg'));
-          });
+          ipSet(params)
+            .then((res) => {
+              createMessage.success(res.msg);
+            })
+            .catch(() => {
+              createMessage.error('不支持修改ip');
+            });
 
           // console.log(params);
         } catch (error) {

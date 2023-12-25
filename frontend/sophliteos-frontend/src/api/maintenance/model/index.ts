@@ -18,6 +18,7 @@ export interface AlarmParams {
   tpuScale: number; // tpu内存使用率
   // externalHardDiskRate: number; // 外挂存储使用率
   diskRate: number; // 存储使用率
+  tpuRate: number;
 }
 
 export interface RollbackParams {

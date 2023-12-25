@@ -46,8 +46,8 @@ const accessAlgo: AppRouteModule = {
           meta: {
             title: t('routes.dashboard.alarmDetail'),
             // hideMenu: true,
-            // hideBreadcrumb: true, // 在隐藏面包屑中，隐藏当前菜单
-            // hideTab: true,
+            hideBreadcrumb: true, // 在隐藏面包屑中，隐藏当前菜单
+            hideTab: true,
           },
         },
       ],

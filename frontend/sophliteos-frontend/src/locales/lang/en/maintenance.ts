@@ -2,6 +2,7 @@ export default {
   appSoftUpdate: 'Application Upgrade',
   sysSoftUpdate: 'System Upgrade',
   updatedFiles: 'Uploaded File',
+  upgradePackage: 'Upgrade Package',
   systemUpdate: {
     systemUpdate: 'Control Board',
     coreBoardUpdate: 'Core Board',
@@ -23,6 +24,7 @@ export default {
     startUpdate: 'Start Upgrade',
     updaing: 'Upgrading',
     selectFile: 'Select File',
+    uploadFiles: 'Upload Files',
     taskList: {
       name: 'Name',
       product: 'Device Type',
@@ -53,7 +55,6 @@ export default {
   ssmUpdate: {
     serverUsername: 'Server Username',
     serverPassword: 'Server Password',
-    ssmUpdate: 'SSM Update',
   },
   coreBoardMap: {
     sysMap: 'system Map',
@@ -113,6 +114,5 @@ export default {
     // externalHardDiskRate: '外挂存储使用率',
     diskRate: 'Disk Usage',
     title: 'Alarm Threshold',
-    cloud: 'Cloud Platform Config',
   },
 };

@@ -23,126 +23,21 @@ import (
 type ResourceApi struct{}
 
 func (b *ResourceApi) NewResource(c *gin.Context) {
-	if global.Arch == "arm64" {
-		resource := getArmResource(c)
-		c.JSON(http.StatusOK, mvc.Success(resource))
-	} else if global.Arch == "amd64" {
-		resource := getPcieResource(c)
-		c.JSON(http.StatusOK, mvc.Success(resource))
-	} else if global.Arch == "riscv64" {
-		resource := getPcieResource(c)
-		c.JSON(http.StatusOK, mvc.Success(resource))
-	}
-
+	resource := GetArmResource(c)
+	c.JSON(http.StatusOK, mvc.Success(resource))
 }
 
-func getPcieResource(c *gin.Context) types.PcieResource {
+func GetArmResource(c *gin.Context) types.Resource {
+
 	ctrlResource, err := ssm.GetCtrlResource()
 	if err != nil {
 		logger.Error("error is :%v", err)
 		logger.Error("ctrlResource is :%v", ctrlResource)
 	}
+	// mvc.HandleError(err)
 
 	ctrlBasic, deviceSn, err := ssm.GetCtrlBasic()
-	if err != nil {
-		logger.Error("error is :%v", err)
-		logger.Error("ctrlBasic is :%v", ctrlBasic)
-	}
-
-	deviceType := strings.ToUpper(ctrlBasic.Configure.Basic.DeviceType)
-	global.DeviceType = deviceType
-
-	global.SSmLists.CoreSsm = []types.SsmVersion{}
-	resource := types.PcieResource{
-		DeviceSn:        deviceSn,
-		DeviceName:      ctrlBasic.Configure.Basic.DeviceName,
-		DeviceType:      deviceType,
-		SdkVersion:      ctrlBasic.System.SdkVersion,
-		OperatingSystem: ctrlBasic.System.OperatingSystem,
-		RunTime:         ctrlBasic.System.Runtime,
-		BuildTime:       ctrlBasic.System.BuildTime,
-		BmssmVersion:    ctrlBasic.System.BmssmVersion,
-		Cpu:             getCpu(ctrlResource.CentralProcessingUnit.Cpu),
-		Memory:          getMemory(ctrlResource.CentralProcessingUnit.Memory),
-		NetCard:         getNetCarts(ctrlResource.CentralProcessingUnit.NetCard),
-	}
-	for _, disk := range ctrlResource.CentralProcessingUnit.Disk {
-		resource.Disk = append(resource.Disk, types.DiskInfo(disk))
-	}
-
-	var boards []types.Board
-
-	for index, board := range ctrlResource.CoreComputingUnit.Board {
-		cpu := getCpu(board.CoreSys.Cpu)
-		memory := getMemory(board.CoreSys.Mem)
-		disk := getDisks(board.CoreSys.Disks)
-		netCart := getNetCarts(board.CoreSys.NetCards)
-		var chips []types.Chip
-
-		for _, chip := range board.Chip {
-			chipIndex, _ := strconv.Atoi(chip.ChipIndex)
-			chips = append(chips, types.Chip{
-				ChipIndex:                     chipIndex,
-				Health:                        chip.Health,
-				Temperature:                   chip.Temperature,
-				MemoryUsedBytes:               int64(chip.Memory.Total - chip.Memory.Available),
-				MemoryTotalBytes:              int64(chip.Memory.Total),
-				TpuUtililizationRate:          chip.UtilizationRate,
-				TheoretialCalculationCapacity: chip.CalculationCapacity,
-				Slot:                          chip.Slot,
-				ChipType:                      chip.ChipType,
-			})
-			chip.CalculationCapacityInt8 = chip.CalculationCapacity
-
-		}
-		if len(board.Chip) == 0 {
-			logger.Error("无法读取核心版芯片信息 SN=%s", board.BoardSn)
-			continue
-		}
-		boards = append(boards, types.Board{
-			Cpu:         cpu,
-			Memory:      memory,
-			Disk:        disk,
-			NetCard:     netCart,
-			Number:      index,
-			BoardSn:     board.BoardSn,
-			BoardType:   board.BoardType,
-			Temperature: board.Temperature,
-			FanSpeed:    board.FanspeedPercent,
-			SdkVersion:  board.SdkVersion,
-			Chip:        chips,
-		})
-	}
-
-	resource.CoreComputingUnit = types.CoreComputingUnit{
-		Board: boards,
-	}
-
-	for _, netCard := range ctrlResource.CentralProcessingUnit.NetCard {
-		if netCard.IP != "" {
-			resource.DeviceIP = netCard.IP
-			break
-		}
-	}
-
-	global.SSmLists.CtrlSsm.DeviceSn = ctrlResource.DeviceSn
-	global.SSmLists.CtrlSsm.Ip = resource.DeviceIP
-	global.SSmLists.CtrlSsm.Version = "V" + ctrlResource.CentralProcessingUnit.BmssmVersion + "-" + ctrlResource.CentralProcessingUnit.BuildTime
-	global.SdkVersion = ctrlBasic.System.SdkVersion
-
-	logger.Debug("resource is :%v", resource)
-	global.PcieResource = resource
-	return resource
-}
-
-func getArmResource(c *gin.Context) types.Resource {
-	ctrlResource, err := ssm.GetCtrlResource()
-	if err != nil {
-		logger.Error("error is :%v", err)
-		logger.Error("ctrlResource is :%v", ctrlResource)
-	}
-
-	ctrlBasic, deviceSn, err := ssm.GetCtrlBasic()
+	// mvc.HandleError(err)
 	if err != nil {
 		logger.Error("error is :%v", err)
 		logger.Error("ctrlBasic is :%v", ctrlBasic)
@@ -383,6 +278,10 @@ func getArmResource(c *gin.Context) types.Resource {
 	logger.Debug("resource is :%v", resource)
 	global.Resource = resource
 	return resource
+}
+
+func (b *ResourceApi) Test(c *gin.Context) {
+	c.JSON(http.StatusOK, mvc.Success(nil))
 }
 
 func appendNetCard(ips []ssm.Ip, netCards []types.NetCard) {

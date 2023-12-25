@@ -1,17 +1,14 @@
 <template>
   <PageWrapper title="SSM" :content="t('routes.dashboard.content.ssmContent')">
     <div style="display: flex; flex-direction: row; margin-bottom: 20px">
-      <div style="background-color: white" v-if="!deviceStore.isSingleBoard && !deviceStore.isPcie">
+      <div style="background-color: white" v-if="!deviceStore.isSingleBoard">
+        <ControlForm :isSsm="true" />
+      </div>
+      <div style="background-color: white; width: 100%" v-else>
         <ControlForm :isSsm="true" />
       </div>
       <div
-        style="background-color: white; width: 100%"
-        v-if="deviceStore.isSingleBoard || deviceStore.isPcie"
-      >
-        <ControlForm :isSsm="true" />
-      </div>
-      <div
-        v-if="!deviceStore.isSingleBoard && !deviceStore.isPcie"
+        v-if="!deviceStore.isSingleBoard"
         style="background-color: white; margin-left: 20px; width: 100%"
       >
         <CoreForm ref="core" :isSsm="true"

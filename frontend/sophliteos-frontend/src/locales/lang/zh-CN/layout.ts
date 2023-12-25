@@ -27,7 +27,7 @@ export default {
     inputOldPassword: '请输入旧密码',
     inputNewPassword: '请输入新密码',
     inputRepeatNew: '请输入确认新密码',
-    passwordFormatError: '密码格式不符合要求，请重新输入',
+    passwordFormatError: '大写字母，小写字母、数字，特征字符至少3种，长度8-16位',
     diffNewPassword: '两次新密码不一致，请重新输入',
 
     home: '首页',

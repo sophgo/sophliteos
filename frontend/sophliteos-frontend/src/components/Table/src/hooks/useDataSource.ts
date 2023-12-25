@@ -287,7 +287,7 @@ export function useDataSource(
       }
 
       const res = await api(params);
-      // console.log('res', res);
+      console.log('res', res);
 
       rawDataSourceRef.value = res;
 

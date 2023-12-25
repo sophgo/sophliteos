@@ -1,7 +1,6 @@
 package initialization
 
 import (
-	"runtime"
 	"sophliteos/api/v1/system"
 	"sophliteos/client/ssm"
 	"sophliteos/config"
@@ -34,8 +33,7 @@ func InitBase() {
 	global.OtaTimeOut, _ = time.ParseDuration(timeout)
 	global.BlockAllRequests = false
 	global.Version = services.VersionInit("release_version.txt")
-	global.Arch = runtime.GOARCH
-	logger.Info("Arch is %s", global.Arch)
+	global.AlgoFlag = false
 
 	_, err := ssm.SubscribeAlarm()
 	if err != nil {

@@ -29,9 +29,9 @@
       <ACol :span="12">
         <FormItem>
           <!-- No logic, you need to deal with it yourself -->
-          <Checkbox v-model:checked="rememberMe" size="small">
+          <!-- <Checkbox v-model:checked="rememberMe" size="small">
             {{ t('sys.login.rememberMe') }}
-          </Checkbox>
+          </Checkbox> -->
         </FormItem>
       </ACol>
     </ARow>
@@ -49,7 +49,7 @@
 <script lang="ts" setup>
   import { reactive, ref, unref, computed } from 'vue';
 
-  import { Checkbox, Form, Input, Row, Col, Button } from 'ant-design-vue';
+  import { Form, Input, Row, Col, Button } from 'ant-design-vue';
   import LoginFormTitle from './LoginFormTitle.vue';
 
   import { useI18n } from '/@/hooks/web/useI18n';
@@ -75,7 +75,7 @@
 
   const formRef = ref();
   const loading = ref(false);
-  const rememberMe = ref(false);
+  // const rememberMe = ref(false);
 
   const formData = reactive({
     account: 'admin',

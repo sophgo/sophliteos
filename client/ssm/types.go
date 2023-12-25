@@ -118,6 +118,7 @@ type AlarmThreshold struct {
 	SystemScale          float64 `json:"systemScale"`
 	TotalMemoryScale     float64 `json:"totalMemoryScale"`
 	TpuScale             float64 `json:"tpuScale"`
+	TpuRate              float64 `json:"tpuRate"`
 	VideoScale           float64 `json:"videoScale"`
 }
 

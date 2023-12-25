@@ -82,3 +82,12 @@ func DeleteAlarmByCreatedAt(createdAt time.Time) error {
 	}
 	return nil
 }
+
+// 删除日期前数据，保留最新的200条
+func DeleteOldestAlarms() error {
+	db := DB.Model(&Alarm{}).Debug().Order("created_time asc").Limit(-1).Offset(200).Delete(&Alarm{})
+	if err := db.Error; err != nil {
+		return err
+	}
+	return nil
+}

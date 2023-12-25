@@ -56,9 +56,6 @@ export const useDeviceInfo = defineStore({
   }),
   getters: {
     deviceType: (state) => state.deviceInfo.deviceType,
-    isPcie: (state) => {
-      return state.deviceInfo.deviceType.toLocaleLowerCase() === 'pcie';
-    },
     // 判断是否为单板
     isSingleBoard: (state) => {
       return state.singleBoardArr.some((item) =>
@@ -70,6 +67,7 @@ export const useDeviceInfo = defineStore({
     async getDeviceInfo() {
       const result = await resourceApi();
       const isAlgo = await IsAlgorithm();
+
       if (result) {
         this.originData = result;
         const { cpu, memory, coreComputingUnit, deviceSn, deviceType } = result;
@@ -88,18 +86,11 @@ export const useDeviceInfo = defineStore({
           }
         });
         this.init();
-        const isPcie = deviceType.toLowerCase() === 'pcie';
         // 核心板数据
         const isSingleBoard = this.singleBoardArr.some((item) =>
           deviceType.toLowerCase().includes(item),
         );
-
-        if (
-          !isSingleBoard &&
-          coreComputingUnit.board &&
-          coreComputingUnit.board.length &&
-          !isPcie
-        ) {
+        if (!isSingleBoard && coreComputingUnit.board && coreComputingUnit.board.length) {
           const sortBoard = coreComputingUnit.board.sort((b1, b2) => b1.number - b2.number);
           this.deviceStatus = sortBoard.map((board) => ({
             sn: board.boardSn,
@@ -125,19 +116,12 @@ export const useDeviceInfo = defineStore({
         this.memory.push({ name: deviceSn, value: memory.usage.toFixed(1) });
         // this.chipTemperature.push({ name: deviceSn, value: 0.1 });
         // this.fanSpeed.push({ name: deviceSn, value: 0.1 });
-        if (!isSingleBoard && !isPcie) {
+        if (!isSingleBoard) {
           // se6有板卡详情菜单
           const overview = asyncRoutes.find((item) => item.name === 'Overview');
           const Maintenance = asyncRoutes.find((item) => item.name === 'Maintenance');
           overview.children[1].meta.hideMenu = false;
           Maintenance.children[2].meta.hideMenu = false;
-          permissionStore.buildRoutesAction();
-          permissionStore.setLastBuildMenuTime();
-        }
-        if (isPcie) {
-          const Maintenance = asyncRoutes.find((item) => item.name === 'Maintenance');
-          Maintenance.children[0].meta.hideMenu = true;
-          Maintenance.children[3].meta.hideMenu = true;
           permissionStore.buildRoutesAction();
           permissionStore.setLastBuildMenuTime();
         }

@@ -24,6 +24,7 @@ export default {
       coreUpgrade: '核心板升级',
       systemUpdate: '系统升级',
       rollback: '回滚',
+      UpgradeUpload: '升级包上传',
     },
   },
   warning: {

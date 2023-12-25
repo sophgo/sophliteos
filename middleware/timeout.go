@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"sophliteos/logger"
 	mvc "sophliteos/mvc/core"
-	error2 "sophliteos/mvc/error"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +19,7 @@ func TimeoutMiddleware(timeOut time.Duration) gin.HandlerFunc {
 
 		done := make(chan bool)
 		go func() {
+			defer close(done)
 			c.Next()
 			done <- true
 		}()
@@ -30,8 +30,9 @@ func TimeoutMiddleware(timeOut time.Duration) gin.HandlerFunc {
 		case <-ctx.Done():
 			// 请求超时，执行超时逻辑
 			logger.Error("timeout on %s %s", c.Request.Method, c.Request.URL.Path)
+
+			c.JSON(http.StatusOK, mvc.FailWithMsg(-1, "传输超时"))
 			c.Abort()
-			c.JSON(http.StatusGatewayTimeout, mvc.FailWithMsg(error2.UpgradeErr, "传输超时"))
 		}
 	}
 }

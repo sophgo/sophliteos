@@ -15,6 +15,12 @@
   import { useI18n } from '/@/hooks/web/useI18n';
   const { t } = useI18n();
 
+  import { useDeviceInfo } from '/@/store/modules/overview';
+  const deviceStore = useDeviceInfo();
+
+  if (!deviceStore.deviceType) {
+    deviceStore.getDeviceInfo();
+  }
   // enum WarningTypes {
   //   'cpu' = 'CPU',
   //   'memory' = '内存',
@@ -36,10 +42,10 @@
       label: t('logs.disk'),
       value: 'disk',
     },
-    {
-      label: t('logs.netCard'),
-      value: 'netCard',
-    },
+    // {
+    //   label: t('logs.netCard'),
+    //   value: 'netCard',
+    // },
     {
       label: t('logs.board'),
       value: 'board',

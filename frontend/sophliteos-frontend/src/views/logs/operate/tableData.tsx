@@ -18,7 +18,7 @@ export function getBasicColumns(): BasicColumn[] {
     },
     {
       title: t('logs.operate.funcName'),
-      dataIndex: 'operationContent',
+      dataIndex: 'operationFunc',
       width: 200,
       align: 'left',
     },

@@ -15,7 +15,20 @@ func SaveOptLog(request *http.Request, operationType string, parameters ...inter
 	if parameters != nil && len(parameters) > 0 {
 		operationContent = fmt.Sprintf(operationContent, parameters...)
 	}
+
 	user := mvc.GetUser(mvc.Token(request))
+	if operationContent == "登录" {
+		database.SaveOptLog(database.OptLog{
+			UserName:         "admin",
+			CreatedTime:      time.Now(),
+			OperationType:    strings.Split(request.RequestURI, "?")[0],
+			OperationContent: operationContent,
+			OperationIP:      request.RemoteAddr[0:strings.LastIndex(request.RemoteAddr, ":")],
+			OperationFunc:    operationContent,
+		})
+		return
+	}
+
 	if user == nil {
 		return
 	}
@@ -25,5 +38,6 @@ func SaveOptLog(request *http.Request, operationType string, parameters ...inter
 		OperationType:    strings.Split(request.RequestURI, "?")[0],
 		OperationContent: operationContent,
 		OperationIP:      request.RemoteAddr[0:strings.LastIndex(request.RemoteAddr, ":")],
+		OperationFunc:    operationContent,
 	})
 }

@@ -34,7 +34,6 @@ const transform: AxiosTransform = {
    * @description: 处理响应数据。如果数据不是预期格式，可直接抛出错误
    */
   transformResponseHook: (res: AxiosResponse<Result>, options: RequestOptions) => {
-    // console.log('res', res);
     // 后端返回html直接展示
     if (res.headers['content-type'].includes('text/html')) {
       createInfoModal({ class: 'serverUpgrade', content: res.data as any });
@@ -173,6 +172,10 @@ const transform: AxiosTransform = {
    * @description: 响应拦截器处理
    */
   responseInterceptors: (res: AxiosResponse<any>) => {
+    if (res?.config?.url.includes('/upgrade') && res?.data?.code === -1) {
+      createMessage.error(res.data.msg);
+      return Promise.reject(res.data.msg);
+    }
     return res;
   },
 
@@ -183,6 +186,7 @@ const transform: AxiosTransform = {
     const { t } = useI18n();
     const errorLogStore = useErrorLogStoreWithOut();
     errorLogStore.addAjaxErrorInfo(error);
+
     const { response, code, message, config } = error || {};
     const errorMessageMode = config?.requestOptions?.errorMessageMode || 'none';
     const msg: string = response?.data?.error?.message ?? '';
@@ -208,7 +212,6 @@ const transform: AxiosTransform = {
     } catch (error) {
       throw new Error(error as unknown as string);
     }
-
     checkStatus(error?.response?.status, msg, errorMessageMode);
 
     // 添加自动重试机制 保险起见 只针对GET请求

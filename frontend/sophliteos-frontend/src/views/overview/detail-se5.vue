@@ -12,7 +12,7 @@
                 v-model:value="deviceName"
                 ref="deviceNameInput"
                 @blur="handleBlur"
-                @keyup.enter="handleBlur"
+                @keyup.enter.stop="handleBlur1"
               />
               <a-tooltip :title="title" placement="right" :visible="editType">
                 <EditOutlined
@@ -140,7 +140,12 @@
         usage: originData.value?.coreComputingUnit?.board
           ? originData.value?.coreComputingUnit?.board[0].chip[0].tpuUtililizationRate
           : 0,
-        text: 'INT8 ' + (originData.value.tpuMax ? originData.value.tpuMax : 0) + 'TOPS',
+        text:
+          'INT8 ' +
+          (originData.value?.coreComputingUnit?.board
+            ? originData.value?.coreComputingUnit?.board[0].chip[0].theoretialCalculationCapacity
+            : 0) +
+          'TOPS',
       },
     ];
   });
@@ -186,6 +191,9 @@
     if (result && result.code === 0) {
       deviceInfoStore.updateDevice('deviceName', deviceNameTrim);
     }
+  };
+  const handleBlur1 = () => {
+    edit.value = false;
   };
 </script>
 <style lang="less" scoped>

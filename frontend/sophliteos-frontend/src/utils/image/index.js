@@ -107,7 +107,7 @@ export function drawRectOnImage(imageUrl, srcRect, InBoxs) {
       ctx.beginPath();
       ctx.lineWidth = '2';
       ctx.strokeStyle = 'red';
-      ctx.font = '20px Arial, sans-serif'; //设置字体大小 类型
+      ctx.font = '15px Arial'; // 设置字体和字号
       ctx.fillStyle = 'red'; // 设置字体颜色
       srcRect.map((item, index) => {
         ctx.rect(item.x, item.y, item.width, item.height);
@@ -121,8 +121,4 @@ export function drawRectOnImage(imageUrl, srcRect, InBoxs) {
     };
     img.src = imageUrl;
   });
-}
-
-export function getAssetsFile(url) {
-  return new URL(`../assets/images/${url}.png`, import.meta.url).href;
 }

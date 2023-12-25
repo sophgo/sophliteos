@@ -24,13 +24,13 @@
             {{ t('component.table.settingIndexColumnShow') }}
           </Checkbox>
 
-          <Checkbox
+          <!-- <Checkbox
             v-model:checked="checkSelect"
             @change="handleSelectCheckChange"
             :disabled="!defaultRowSelection"
           >
             {{ t('component.table.settingSelectColumnShow') }}
-          </Checkbox>
+          </Checkbox> -->
 
           <a-button size="small" type="link" @click="reset">
             {{ t('common.resetText') }}
