@@ -22,6 +22,8 @@ enum Api {
   SysTables = '/device/iptable/get',
   deleteUserIp = '/device/iptable/delete',
   addUserIp = '/device/iptable/add',
+  getComIP = '/device/basic',
+  modComIP = '/device/mod',
 }
 
 // IP地址设置
@@ -128,4 +130,14 @@ export function DeleteUserTables(params: any) {
 
 export function addUserMap(params: any) {
   return defHttp.post({ url: Api.addUserIp, params });
+}
+
+export function getComIP() {
+  return defHttp.get({ url: Api.getComIP }).then((res) => {
+    return res.configure;
+  });
+}
+
+export function modComIP(params: any) {
+  return defHttp.post({ url: Api.modComIP, params });
 }

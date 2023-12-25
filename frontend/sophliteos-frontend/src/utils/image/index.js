@@ -122,3 +122,7 @@ export function drawRectOnImage(imageUrl, srcRect, InBoxs) {
     img.src = imageUrl;
   });
 }
+
+export function getAssetsFile(url) {
+  return new URL(`../assets/images/${url}.png`, import.meta.url).href;
+}

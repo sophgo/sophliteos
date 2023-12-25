@@ -76,7 +76,7 @@ const maintenance: AppRouteModule = {
       name: 'Threshold',
       component: () => import('/@/views/maintenance/threshold/index.vue'),
       meta: {
-        title: t('routes.dashboard.threshold'),
+        title: t('routes.dashboard.sysSetting'),
       },
     },
   ],

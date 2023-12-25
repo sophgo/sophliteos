@@ -1,7 +1,7 @@
 <template>
   <a-skeleton :loading="loading" active>
     <div
-      v-if="!deviceInfoStore.isSingleBoard"
+      v-if="!deviceInfoStore.isSingleBoard && !deviceInfoStore.isPcie"
       style="font-size: 16px; margin: 20px 0 0 20px; font-weight: 550"
       >{{
         isSoftware
@@ -10,7 +10,9 @@
       }}</div
     >
     <div v-else style="font-size: 16px; margin: 20px 0 0 20px; font-weight: 550">{{
-      t('maintenance.systemUpdate.localUpdate1')
+      deviceInfoStore.isPcie
+        ? t('maintenance.ssmUpdate.ssmUpdate')
+        : t('maintenance.systemUpdate.localUpdate1')
     }}</div>
     <div style="width: 20vw; margin-left: 20px">
       <a-form

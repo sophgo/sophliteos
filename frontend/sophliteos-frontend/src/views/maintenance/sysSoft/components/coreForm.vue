@@ -74,7 +74,12 @@
       <a-form-item
         :label="t('sys.uploadFile.btnText')"
         name="file"
-        :rules="[{ required: true, message: t(t('maintenance.systemUpdate.selectNeedFile')) }]"
+        :rules="[
+          {
+            required: deviceInfoStore.isSingleBoard || isSsm,
+            message: t('maintenance.systemUpdate.selectNeedFile'),
+          },
+        ]"
         v-if="coreFormState.type === 'local'"
         v-model:value="coreFormState.file"
       >

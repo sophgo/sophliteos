@@ -53,6 +53,7 @@ export default {
   ssmUpdate: {
     serverUsername: 'Server Username',
     serverPassword: 'Server Password',
+    ssmUpdate: 'SSM Update',
   },
   coreBoardMap: {
     sysMap: 'system Map',
@@ -112,5 +113,6 @@ export default {
     // externalHardDiskRate: '外挂存储使用率',
     diskRate: 'Disk Usage',
     title: 'Alarm Threshold',
+    cloud: 'Cloud Platform Config',
   },
 };

@@ -35,19 +35,42 @@
         </a-form>
       </a-skeleton>
     </a-tab-pane>
+    <a-tab-pane key="cloud" :tab="t('maintenance.threshold.cloud')">
+      <a-form
+        :model="CloudModel"
+        v-bind="formItemLayout"
+        class="flex flex-wrap justify-around"
+        size="large"
+      >
+        <a-form-item class="w-2/5" label="本机公网IP">
+          <a-input v-model:value="CloudModel.commonIP" />
+        </a-form-item>
+
+        <a-form-item class="w-2/5" label="云平台地址">
+          <a-input v-model:value="CloudModel.cloudIP" />
+        </a-form-item>
+        <a-form-item :wrapper-col="{ offset: 8, span: 16 }" class="w-2/5 !mr-1/2">
+          <a-button type="primary" @click="submitCloud" :loading="loading">{{
+            t('sys.btn.confirm')
+          }}</a-button>
+        </a-form-item>
+      </a-form>
+    </a-tab-pane>
   </a-tabs>
 </template>
 <script lang="ts" setup>
   import { reactive, ref, onMounted } from 'vue';
   import { PercentageOutlined } from '@ant-design/icons-vue';
   import type { UnwrapRef } from 'vue';
-  import { setAlarm, getAlarm } from '/@/api/maintenance/index';
+  import { setAlarm, getAlarm, getComIP, modComIP } from '/@/api/maintenance/index';
   import { Tabs } from 'ant-design-vue';
 
   import { useI18n } from '/@/hooks/web/useI18n';
   // import { useMessage } from '/@/hooks/web/useMessage';
 
   import { AlarmParams } from '/@/api/maintenance/model/index';
+  import { useMessage } from '/@/hooks/web/useMessage';
+  const { createMessage } = useMessage();
 
   // const { createErrorModal } = useMessage();
   const { t } = useI18n();
@@ -118,6 +141,10 @@
     // externalHardDiskRate: 90,
     diskRate: 90,
   });
+  const CloudModel = reactive({
+    commonIP: '',
+    cloudIP: '',
+  });
   const formItemLayout = {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
@@ -139,6 +166,11 @@
       // formState.externalHardDiskRate = result.externalHardDiskRate * 100;
       formState.diskRate = result.diskRate * 100;
     }
+    const res = await getComIP();
+    if (res) {
+      CloudModel.commonIP = res.natIP;
+      CloudModel.cloudIP = res.serviceAddress.register.serviceAddress[0];
+    }
   };
   onMounted(() => {
     init();
@@ -157,7 +189,9 @@
           params[key] = params[key] / 100;
         }
       });
-      await setAlarm(params);
+      await setAlarm(params).then(() => {
+        createMessage.success('修改成功');
+      });
     } catch (error) {
       // createErrorModal({
       //   title: t('sys.api.errorTip'),
@@ -168,4 +202,17 @@
       loading.value = false;
     }
   };
+  async function submitCloud() {
+    const params = {
+      natIP: CloudModel.commonIP,
+      register: {
+        switch: 'on',
+        interval: 30,
+        serviceAddress: [CloudModel.cloudIP],
+      },
+    };
+    await modComIP(params).then(() => {
+      createMessage.success('修改成功');
+    });
+  }
 </script>

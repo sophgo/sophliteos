@@ -58,6 +58,7 @@ export default {
     boardSn: '智算板SN',
     boardHost: '智算板Host',
     version: 'SSM版本',
+    ssmUpdate: 'SSM升级',
   },
   newworkSettings: {
     ipType: '网络连接方式',
@@ -115,5 +116,6 @@ export default {
     // externalHardDiskRate: '外挂存储使用率',
     diskRate: '存储使用率',
     title: '告警阈值配置',
+    cloud: '云平台配置',
   },
 };

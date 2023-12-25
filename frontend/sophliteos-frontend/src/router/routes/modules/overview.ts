@@ -22,6 +22,7 @@ const overview: AppRouteModule = {
       component: () => import('/@/views/overview/index.vue'),
       meta: {
         title: t('routes.dashboard.ovewview'),
+        hideMenu: false,
         // icon: 'simple-icons:about-dot-me',
         // hideBreadcrumb: true, // 在隐藏面包屑中，隐藏当前菜单
       },

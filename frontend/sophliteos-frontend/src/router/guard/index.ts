@@ -12,7 +12,8 @@ import { createStateGuard } from './stateGuard';
 import nProgress from 'nprogress';
 import projectSetting from '/@/settings/projectSetting';
 import { createParamMenuGuard } from './paramMenuGuard';
-
+import { useDeviceInfo } from '/@/store/modules/overview';
+import { storeToRefs } from 'pinia';
 // Don't change the order of creation
 export function setupRouterGuard(router: Router) {
   createPageGuard(router);
@@ -37,7 +38,14 @@ function createPageGuard(router: Router) {
     to.meta.loaded = !!loadedPageMap.get(to.path);
     // Notify routing changes
     setRouteChange(to);
-
+    const isLoginPage = to.path === '/login';
+    if (!isLoginPage) {
+      const deviceInfoStore = useDeviceInfo();
+      const { deviceInfo } = storeToRefs(deviceInfoStore);
+      if (!deviceInfo.value.deviceSn) {
+        deviceInfoStore.getDeviceInfo().then(() => {});
+      }
+    }
     return true;
   });
 
