@@ -1,9 +1,3 @@
-## 0 说明
-1. sophliteos分支为基础服务，其中包含了前端和后端代码；输出安装包sophliteos-linux_arm64.tgz   
-安装包文件说明参考：[sophliteos安装文件介绍](./doc/sophliteos.md)
-
-2. algoliteos分支为算法插件，仅包含后端代码；输出安装包algoliteos-linux_arm64.tgz  
-安装包文件说明参考：[algoliteos安装文件介绍](./doc/algoliteos.md)
 
 ## 1 简介
 
