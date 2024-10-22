@@ -1,0 +1,11 @@
+module:AI_SE/sophliteos(master)
+commit: 98120ed10ceaf056060ab53c96fa943f6229e42f
+
+module:AI_SE/sophliteos-build(master)
+commit: bd50ff7599d2c57c5d125d3f0f07afed104686a0
+
+module:AI_SE/sophliteos-frontend(master)
+commit: 5ee93cd6859bcf53e24fa7fda07e57c92c919b63
+
+module:bmssm(master)
+commit: ce454fb2880c1d31fec44220e3964148922b5332
